@@ -1,0 +1,11 @@
+{% extends 'mafia/base.html' %}
+
+{% block content %}
+<div id="add_player_name" href=""></div>
+{% for object in object_list %}
+<p>{{ object.title }}</p>
+{% empty %}
+<p>Поки немає доданих гравців. Додайте</p>
+{% endfor %}
+
+{% endblock %}

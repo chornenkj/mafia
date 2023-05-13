@@ -1,0 +1,98 @@
+<!doctype html>
+
+<html lang="uk-UA">
+<head>
+{% block head %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+        crossorigin="anonymous">
+
+    <!-- Load jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+
+    {% block extra_head %}
+    {% endblock %}
+
+{% endblock %}
+</head>
+
+<body>
+{% block body %}
+
+{% block pre_body %}
+{% endblock %}
+
+{% block nav %}
+<nav id="navbar" class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'mafia:index' %}">МАФІЯ</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarToggler" aria-controls="navbarToggler"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggler">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'mafia:players' %}"> Гравці</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'mafia:current' %}">Моя гра</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'mafia:new' %}">Почати нову</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+<div id="content" class="container-fluid">
+<div class="justify-content-center">
+    <div class="col-xl-8 col-md-10 col-sm-10 col-xs-12"><br>
+        {% block content %}
+        {% endblock %}
+    </div>
+</div>
+</div>
+
+<div id="mediacontent" class="container-fluid">
+    {% block mediacontent %}
+    {% endblock %}
+</div>
+
+
+<!-- Optional JavaScript; choose one of the two! -->
+
+<!-- Option 1: Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+<!-- Option 2: Separate Popper and Bootstrap JS -->
+<!--
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" integrity="sha384-cVKIPhGWiC2Al4u+LWgxfKTRIcfu0JTxR+EQDz/bgldoEyl4H0zUF0QKbrJ0EcQF" crossorigin="anonymous"></script>
+-->
+
+{% block extra_body %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% endblock %}
+
+</body>
+</html>
