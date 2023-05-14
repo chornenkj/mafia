@@ -1,0 +1,6 @@
+{% load crispy_forms_tags %}
+<form id="form" method="post" action="{% url 'mafia:add_player_name' %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-primary" name="submit" type="submit" value="Submit">Додати</button>
+</form>

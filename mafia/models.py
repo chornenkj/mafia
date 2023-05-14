@@ -16,11 +16,32 @@ TURN_CHOICES = (
 )
 
 class PlayerName(models.Model):
-    title = models.CharField(max_length=16)
+    title = models.CharField(max_length=30, verbose_name="Ім'я гравця")
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.title
 
 
 class Game(models.Model):
-    pass
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+
+
+class Turn(models.Model):
+    type = models.CharField(
+        max_length=1,
+        choices=TURN_CHOICES,
+    )
+    game = models.ForeignKey(
+        Game,
+        on_delete=models.CASCADE,
+        related_name="turns",
+    )
+    ended = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
 
 
 class Player(models.Model):
@@ -40,15 +61,6 @@ class Player(models.Model):
         on_delete=models.CASCADE,
         related_name="players",
     )
-
-
-class Turn(models.Model):
-    type = models.CharField(
-        max_length=1,
-        choices=TURN_CHOICES,
-    )
-    game = models.ForeignKey(
-        Game,
-        on_delete=models.CASCADE,
-        related_name="turns",
-    )
+    dead = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)

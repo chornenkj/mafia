@@ -1,13 +1,19 @@
 {% extends 'mafia/base.html' %}
+{% load crispy_forms_tags %}
 
 {% block content %}
 
 {% if game_id %}
     <p>У вас є незавершена гра.</p>
     <p><a href="{% url 'mafia:current' %}">Продовжити</a></p>
+    <p><a href="{% url 'mafia:delete' %}">Видалити поточну гру</a></p>
 {% else %}
-    <p>У вас немає поточних ігор.</p>
-    <p><a href="{% url 'mafia:new' %}">Розпочати нову</a></p>
+    <p>У вас немає поточних ігор. Щоб розпочати нову, введіть кількість гравців.</p>
+    <form id="form" method="get" action="{% url 'mafia:new' %}">
+        {{ form|crispy }}
+        <button id="to_add_player" class="btn btn-primary" type="submit">Розпочати</button>
+    </form>
+
 {% endif %}
 
 {% endblock %}

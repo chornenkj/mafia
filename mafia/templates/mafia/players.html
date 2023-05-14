@@ -1,11 +1,17 @@
 {% extends 'mafia/base.html' %}
+{% load static %}
 
 {% block content %}
-<div id="add_player_name" href=""></div>
+<div id="add_player_name" href="{% url 'mafia:add_player_name' %}"></div>
+<br>
 {% for object in object_list %}
 <p>{{ object.title }}</p>
 {% empty %}
 <p>Поки немає доданих гравців. Додайте</p>
 {% endfor %}
 
+{% endblock %}
+
+{% block extra_body %}
+<script src="{% static 'mafia/players.js' %}" type="text/javascript"></script>
 {% endblock %}
