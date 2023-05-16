@@ -11,7 +11,7 @@
 </form>
 
 <br>
-<p><strong>Вбиті гравці:</strong></p>
+<h4>Вбиті гравці:</h4>
 {% for player in dead_players %}
     <p>{{ player.name }} - {{ player.get_role_display }}</p>
 {% endfor %}

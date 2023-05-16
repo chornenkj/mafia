@@ -41,9 +41,6 @@ class AddPlayerNameView(CreateView):
         if form.is_valid():
             form.save()
             return HttpResponseRedirect(reverse_lazy('mafia:players'))
-        context = {
-            'form': form,
-        }
         return HttpResponseRedirect(reverse_lazy('mafia:players'))
 
 
@@ -83,7 +80,7 @@ class AddPlayerView(CreateView):
         player_name = PlayerName.objects.get(id=request.POST['player'])
         if Player.objects.filter(name=player_name).exists():
             return HttpResponseRedirect(reverse_lazy('mafia:current'))
-        player = Player(name=player_name,game=game)
+        player = Player(name=player_name,game=game,role='pea')
         player.save()
         request.session['added_players'] = Player.objects.filter(game=game).count()
         return HttpResponseRedirect(reverse_lazy('mafia:current'))
@@ -93,9 +90,10 @@ class AssignPlayerRoleView(View):
 
     def get(self, request, role):
         game = Game.objects.get(id=request.session.get('game_id'))
-        players = Player.objects.filter(game=game)
+        players = Player.objects.filter(game=game, role='pea')
         form = ChoosePlayerForm(players=players)
         assigned_players = []
+        players = Player.objects.filter(game=game)
         for player in players:
             if hasattr(player,'role'):
                 assigned_players.append(player)
@@ -112,9 +110,7 @@ class AssignPlayerRoleView(View):
         player.role = role
         player.save()
         if role == 'maf':
-            print('>>>>>> add role redirect to role maf')
             return HttpResponseRedirect(reverse_lazy('mafia:role', args=['maf']))
-        print('>>>>>> add role redirect to current from last')
         game = Game.objects.get(id=request.session.get('game_id'))
         if role == 'man':
             game.man_assigned = True
@@ -142,11 +138,14 @@ class AddMoveView(CreateView):
 
     def get(self, request, pk, role):
         game = Game.objects.get(id=request.session.get('game_id'))
-        players = Player.objects.filter(game=game, dead=False)
-        dead_players = Player.objects.filter(game=game, dead=True)
-        form = ChoosePlayerForm(players=players)
         turn = Turn.objects.get(id=pk)
         turns = Turn.objects.filter(game=game).order_by('-id')
+        if turn.type == 'n':
+            players = Player.objects.filter(game=game, dead=False).exclude(role=role)
+        else:
+            players = Player.objects.filter(game=game, dead=False)
+        dead_players = Player.objects.filter(game=game, dead=True)
+        form = ChoosePlayerForm(players=players)
         context = {
             'form': form,
             'turn': turn,
@@ -166,20 +165,20 @@ class AddMoveView(CreateView):
 
 
 def finish_game(request, data):
+    game = Game.objects.get(id=request.session.get('game_id'))
+    turns = Turn.objects.filter(game=game).order_by('-id')
     context = {
         'congrats': data,
+        'turns': turns,
     }
     return render(request, 'mafia/end_game.html', context)
 
 
 def new_night_turn(game):
-    print('>>>>>> new_night_turn started')
     turn = Turn(game=game, type='n')
     turn.save()
     if game.maf_assigned:
-        print('>>>>>> redirect to move-maf')
         return HttpResponseRedirect(reverse_lazy('mafia:move', args=[turn.id, 'maf']))
-    print('>>>>>> redirect to role-maf')
     return HttpResponseRedirect(reverse_lazy('mafia:role', args=['maf']))
 
 
@@ -220,9 +219,9 @@ def finish_turn(request, turn):
                 ))
             else:
                 turn.add_log('лікар врятував: {} -> {} ({})\n'.format(
-                    move.get_role_display,
+                    move.get_role_display(),
                     chosen_player.name,
-                    chosen_player.get_role_display))
+                    chosen_player.get_role_display()))
     turn.done = True
     turn.save()
     peace_players = Player.objects.filter(game=turn.game).exclude(role='maf')
@@ -246,7 +245,6 @@ def finish_turn(request, turn):
 def turn_view(request):
     if not request.session.get('game_id'):
         return HttpResponseRedirect(reverse_lazy('mafia:new'))
-    print('>>>>>> turn.view started - point 1')
     number = request.session.get('number')
     added_players = request.session.get('added_players')
     if added_players < number:
@@ -257,7 +255,6 @@ def turn_view(request):
         return new_night_turn(game)
 
     turn = Turn.objects.filter(game=game).order_by('-id')[0]
-    print('>>>>>> turn.view started - point 2')
     if turn.type == 'd':
         if hasattr(turn, 'moves'):
             move = Move.objects.get(turn=turn)
@@ -288,12 +285,9 @@ def turn_view(request):
                 return finish_game(request, 'Перемогла МАФІЯ!')
     if turn.type == 'd':
         return HttpResponseRedirect(reverse_lazy('mafia:move', args=[turn.id,'pea']))
-    print('>>>>>> turn.view started - point 3')
     if not game.maf_assigned:
-        print('>>>>>> turn.view started - point 4')
         HttpResponseRedirect(reverse_lazy('mafia:role', args=['maf']))
     if hasattr(turn, 'moves'):
-        print('>>>>>> turn.view started - point 5')
         if Move.objects.filter(turn=turn,role='doc').exists():
             return finish_turn(request, turn)
         if Move.objects.filter(turn=turn,role='pro').exists():
@@ -316,7 +310,6 @@ def turn_view(request):
             if not Player.objects.get(game=game, role='man').dead:
                 return HttpResponseRedirect(reverse_lazy('mafia:move', args=[turn.id, 'man']))
             return finish_turn(request, turn)
-    print('>>>>>> turn.view started - point 6')
     return HttpResponseRedirect(reverse_lazy('mafia:move', args=[turn.id,'maf']))
 
 

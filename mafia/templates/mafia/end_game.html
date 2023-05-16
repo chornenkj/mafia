@@ -2,8 +2,10 @@
 
 {% block content %}
 
-<p>Вітаємо!</p>
-<p>{{ congrats }}</p>
+<h4>Вітаємо!</h4>
+<h5>{{ congrats }}</h5>
 <p><a href="{% url 'mafia:delete' %}">Завершити гру</a></p>
+
+{% include 'mafia/log.html' %}
 
 {% endblock %}

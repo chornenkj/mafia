@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import PlayerName, Player, Move
+from .models import PlayerName
 
 from Mafia import settings
 
