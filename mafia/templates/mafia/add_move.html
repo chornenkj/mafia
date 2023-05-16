@@ -1,0 +1,21 @@
+{% extends 'mafia/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<br>
+<h4>Хід гравців ролі "{{ role_display }}" ({{ turn.get_type_display }}):</h4>
+<form id="form" method="post" action="{% url 'mafia:move' turn.id role %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-primary" name="submit" type="submit" value="Submit">Обрати</button>
+</form>
+
+<br>
+<p><strong>Вбиті гравці:</strong></p>
+{% for player in dead_players %}
+    <p>{{ player.name }} - {{ player.get_role_display }}</p>
+{% endfor %}
+
+{% include 'mafia/log.html' %}
+
+{% endblock %}

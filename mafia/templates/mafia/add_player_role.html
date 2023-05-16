@@ -1,0 +1,24 @@
+{% extends 'mafia/base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<br>
+<h4>Додайте гравця до ролі "{{ role_display }}":</h4>
+<form id="form" method="post" action="{% url 'mafia:role' role %}">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <button class="btn btn-primary" name="submit" type="submit" value="Submit">Додати</button>
+</form>
+
+<br>
+{% if role == 'maf' %}
+<a href="{% url 'mafia:end_maf' %}">Завершити з мафією</a>
+{% endif %}
+
+<br>
+<br>
+<p><strong>Додані ролі гравців:</strong></p>
+{% for player in assigned_players %}
+    <p>{{ player.name }} - {{ player.get_role_display }}</p>
+{% endfor %}
+{% endblock %}

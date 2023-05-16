@@ -12,5 +12,9 @@ urlpatterns = [
     path('current/players/add', views.AddPlayerView.as_view(), name='add_player'),
     path('new/', views.new_view, name='new'),
     path('delete/', views.delete_game_view, name='delete'),
+    path('turn/', views.turn_view, name='turn'),
+    path('move/<int:pk>/<slug:role>/', views.AddMoveView.as_view(), name='move'),
+    path('role/<slug:role>/', views.AssignPlayerRoleView.as_view(), name='role'),
+    path('end/maf/', views.end_maf, name='end_maf'),
 
 ]

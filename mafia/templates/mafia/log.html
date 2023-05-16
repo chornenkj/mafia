@@ -1,0 +1,6 @@
+{% for turn in turns %}
+    <h5>Хід {{ forloop.counter }} ({{ turn.get_type_display }})</h5>
+    {% for row in turn.log_to_list %}
+        <p>{{ row }}</p>
+    {% endfor %}
+{% endfor %}

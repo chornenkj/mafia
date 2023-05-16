@@ -1,0 +1,9 @@
+{% extends 'mafia/base.html' %}
+
+{% block content %}
+
+<p>Вітаємо!</p>
+<p>{{ congrats }}</p>
+<p><a href="{% url 'mafia:delete' %}">Завершити гру</a></p>
+
+{% endblock %}

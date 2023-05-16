@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import PlayerName, Player
+from .models import PlayerName, Player, Move
 
 from Mafia import settings
 
@@ -20,7 +20,18 @@ class PlayersNumber(forms.Form):
     )
 
 
-class AddPlayerForm(forms.ModelForm):
-    class Meta:
-        model = Player
-        fields = ['name']
+class ChoosePlayerNameForm(forms.Form):
+    player = forms.ChoiceField(label="Виберіть гравця:")
+
+    def __init__(self, players, *args, **kwargs):
+        super(ChoosePlayerNameForm, self).__init__(*args, **kwargs)
+        self.fields['player'].choices = [(x.pk, x.title) for x in players]
+
+
+class ChoosePlayerForm(forms.Form):
+    player = forms.ChoiceField(label="Виберіть гравця:")
+
+    def __init__(self, players, *args, **kwargs):
+        super(ChoosePlayerForm, self).__init__(*args, **kwargs)
+        self.fields['player'].choices = [(x.pk, '{} ({})'.format(x.name.title, x.get_role_display())) for x in players]
+
